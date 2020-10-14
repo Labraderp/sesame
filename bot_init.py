@@ -7,7 +7,6 @@ import time
 
 from importlib import reload
 
-TOKEN = 'MjUzNzI5OTc1MTU1Mjk0MjA4.WD-edA.InrA0Xo_Q-6MMC_ML0rLeIf4J_4'
 intents = discord.Intents.all()
 client = discord.Client(intents=intents)
 
