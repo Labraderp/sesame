@@ -5,7 +5,7 @@ import datetime
 async def blacklisted_word(message):
 
     msg = message.content.lower()
-    
+'''    
     with open("./resources/blacklist.txt") as fd:
         blacklist = fd.read().splitlines()
         length = len(blacklist)
@@ -23,7 +23,7 @@ async def blacklisted_word(message):
                     await message.delete()
                 return 1
     return 0
-
+'''
 async def notif_toggle_on(message):
     server = message.guild
 
