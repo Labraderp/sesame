@@ -16,7 +16,7 @@ async def blacklisted_word(message):
                     print("The following action was logged:", file=f)
                     print(message.author, file=f)
                     print(message.content, file=f)
-                    '''print(datetime.now(), file=f)'''
+                    print(datetime.now(), file=f)
                     print("Message was deleted, moderation action pending", file=f)
                     print("-----------------------------------------------------", file=f)
                     print('', file=f)

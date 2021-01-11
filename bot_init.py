@@ -4,11 +4,26 @@ import commands
 import moderation
 import streamConstants
 import time
-
-from importlib import reload
+import os
 
 intents = discord.Intents.all()
 client = discord.Client(intents=intents)
+
+INSTALL_DIR = str(os.getcwd())
+
+async def create_log_dirs():
+    log_wd = INSTALL_DIR + '/logs/'
+    print("Time to set up the localized files!")
+
+    print("Creating directory in %s" % INSTALL_DIR)
+    os.system("mkdir ./logs")
+
+    print("Creating moderation_logs.txt in %s" % log_wd)
+    os.system("touch ./logs/moderation_logs.txt")
+
+    print("Creating init_logs.txt in %s" % log_wd)
+    os.system("touch ./logs/init_logs.txt")
+    return
 
 @client.event
 async def on_message(message):
@@ -18,29 +33,24 @@ async def on_message(message):
     
     if await moderation.blacklisted_word(message) == 1:
         return
-    
+
     if(message.content.startswith('!', 0, 1)) or 'sesame' in message.content.lower():
-        reload(commands)
         msg = await commands.read_msg(message) 
         if msg == message.content.lower():
             return
-        
         await message.channel.send(msg)
-        with open("./logs/init_logs.log", "a") as f:
-            print(message.author, file=f)
-            print(message.content, file=f)
-            print(message.channel, file=f)
-            print('------------------------------', file=f)
-            print('',file=f)
-        return
 
+    return
+        
 @client.event
 async def on_ready():
-    print('Logged in as')
-    print(client.user.name)
-    print(client.user.id)
-    print('------------------------------')
-    print()
+    await create_log_dirs()
+    os.chdir(INSTALL_DIR)
+
+    with open("./logs/init_logs.txt", "w") as f:        
+        f.write('Logged in as %s' % client.user.name)
+        f.write('\n------------------------------')
+    return
 
 @client.event
 async def on_member_join(member):
@@ -57,17 +67,7 @@ async def on_member_join(member):
     await chnl.send(msg)
     return
 
-@client.event
-async def on_member_update(member_old, member_new):
-    if member_old.guild.id != streamConstants.STREAM_GUILD or member_old.guild.id != streamConstants.TEST_GUILD:
-        return
-
-    if 'Twitch Subscriber' in member_new.roles:
-        await member_new.add_roles(server.get_role(streamConstants.SUB_ROLE))
-    elif 'Twitch Subscriber' not in member_new.roles and 'Doggy Paddler' in member_new.roles:
-        await member_new.remove_roles(server.get_role(streamConstants.SUB_ROLE))
-    return
-
-with open("/home/labraderp/bot_token.txt") as fd:
+with open("/home/pi/bot_token.txt") as fd:
+    print("Running token for testbed_sesame\n")
     token = fd.read()
     client.run(token)
